@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <form class="form-group">
+            <h3>Group Name: {{groupname}}</h3>
+            <input type="text" id="chat-message-input" class="form-control">
+            <input type="button" value="send" id="chat-message-submit"><br><br>
+            <h4>Chat Area..</h4>
+            <textarea id="chat-log" class="form-control" style="width: 334px; height: 103px;">
+                {% for chat in chats %}
+                    {{chat.content}}
+                {% endfor %}
+            </textarea><br><br>
+            {{groupname | json_script:'group-name'}}
+        </form>
+    </div>
+<script>
+    const groupName = JSON.parse(document.getElementById('group-name').textContent)
+    console.log(groupName)
+    let ws = new WebSocket('ws://'+ window.location.host + '/ws/jwc/' + groupName + '/')
+
+    ws.onopen = function(){
+        console.log("Websockect Connecte...")
+    };
+
+    ws.onmessage = function(event) {
+        console.log("Message Received..",event)
+        const data = JSON.parse(event.data)
+        document.querySelector('#chat-log').value += (data.message + '\n')
+    };
+
+    ws.onclose = function(){
+        console.log('websocket Connection Close..')
+    };
+
+    document.getElementById("chat-message-submit").onclick = function(event){
+        const groupInputDom = document.getElementById('chat-message-input')
+        const message = groupInputDom.value
+        ws.send(JSON.stringify({
+            'msg':message
+        }))
+        groupInputDom.value = ''
+    }
+
+</script>
+</body>
+</html>

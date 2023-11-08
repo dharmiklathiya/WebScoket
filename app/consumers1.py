@@ -4,7 +4,7 @@ from asgiref.sync import async_to_sync
 from .models import Chat,Group
 from channels.db import database_sync_to_async
 
-# generic websocket........
+# Generic WebSocket Method........
 class MyWebsocketConsumer(WebsocketConsumer):
 
     def connect(self):
