@@ -1,5 +1,5 @@
-username: channel123
-password: Channel@123
+#username: channel123
+#password: Channel@123
 
 packeges list..
 -----------------------------------
